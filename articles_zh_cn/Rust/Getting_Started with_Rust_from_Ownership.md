@@ -119,11 +119,7 @@ fn main(){
 在示例，y和z都借用了x的所有权，完成之后将会自动交还。    
 
 这是它们的借用关系    
-
-
-![](../../resource/images/Rust/Getting_Started with_Rust_from_Ownership/003.png)
-
-
+!["Rust"](../../resource/images/Rust/Getting_Started with_Rust_from_Ownership/003.png)
 在上关系中，y是引用，可以Copy的，若新定义一个：
 
 ```
