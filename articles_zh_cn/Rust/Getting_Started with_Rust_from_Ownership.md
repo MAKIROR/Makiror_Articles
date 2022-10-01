@@ -121,7 +121,7 @@ fn main(){
 这是它们的借用关系    
 
 
-
+![Linux架构](../resource/images/Linux/Getting_Started with_Rust_from_Ownership/003.png)
 
 
 在上关系中，y是引用，可以Copy的，若新定义一个：
