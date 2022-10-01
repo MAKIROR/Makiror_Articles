@@ -40,7 +40,7 @@
 &nbsp;&nbsp;Linux系统中，最上层是用户空间，也就是应用程序执行的地方，之下是内核空间，而最底层就是硬件。而在Linux内核中，可以概括三个层次，最上层是系统调用的接口，在接口之下的是内核代码，它们在所有Linux支持的处理器体系结构中通用，而再往下就是依赖于体系结构的代码。
 （图片来源于网络）
 
-![Linux架构](images/Linux.png)
+![Linux架构](../resource/images/Linux/Hello_Linux_kernel_architecture_and_principle/Linux.png)
 
 ### 提供系统调用的接口
 &nbsp;&nbsp;系统调用是在用户空间进程与硬件之间加了一个中间层，为用户空间提供了抽象的接口，又保证了系统的稳定和安全性。如果程序可以随意的访问硬件而不是通过内核抽象的接口，那会存在安全的风险。在Linux中，系统调用的接口是用户空间访问内核唯一的方式，唯一合法的入口。
@@ -48,7 +48,7 @@
 ### Linux内核的五大子系统
 &nbsp;&nbsp;在前面有提及，Linux采用的是宏内核（monolithic kernel）架构，主要是由五个子系统组成。
 
-![Linux子系统依赖关系](images/Linux-SubSystem.png)
+![Linux子系统依赖关系](../resource/images/Linux/Hello_Linux_kernel_architecture_and_principle/Linux-SubSystem.png)
 
 #### 内存管理（Memory Manager）
 &nbsp;&nbsp;内存管理（Memory Manager）的部分主要用于控制多个进程共享主内存区域，确保这个过程的安全。另外，Linux是支持虚拟内存的，内存管理子系统会负责完成每个进程的虚拟内存到物理内存的转换。Linux内核为每一个进程在可用资源上建立一个虚拟地址空间。虚拟空间避免了用户直接访问物理内存的地址，或者一些有危害的操作。并且用户程序可以使用比实际物理内存更大的地址空间。无论是用户空间还是内核空间，使用的都是虚拟地址，进程需要访问内存时，内核的把虚拟地址转换为内存的物理地址。
@@ -103,7 +103,7 @@
 ### 内存管理单元
 &nbsp;&nbsp;内存管理单元MMU（Memory Management Unit）是将虚拟地址转换为物理地址，内存保护的东西，是Linux内存管理中相当重要的一个部分。页表（Page Table）描述着MMU的映射规则，MMU通过查找页表来确定虚拟地址映射到哪个物理地址。
 
-![memory](images/memory.png)
+![memory](../resource/images/Linux/Hello_Linux_kernel_architecture_and_principle/memory.png)
 ### 内存页表
 &nbsp;&nbsp;为了更好完成内存映射，Linux内核为每个进程管理了一张“内存页表”，页表是指将虚拟地址映射到物理地址的一个数据结构。它是一个常驻内存的东西，来应对频繁的映射需求。对于虚拟地址空间中的每一页，页表都会分配一个数组项。
 ### 多级页表
