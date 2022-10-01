@@ -120,7 +120,7 @@ fn main(){
 
 这是它们的借用关系    
 
-!["Rust"](../../resource/images/Rust/Getting_Started with_Rust_from_Ownership/003.png)
+!["Rust"](../../resource/images/Rust/Getting_Started%20with_Rust_from_Ownership/003.png)
 
 在上关系中，y是引用，可以Copy的，若新定义一个：
 
