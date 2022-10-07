@@ -13,7 +13,7 @@
 &nbsp;&nbsp;开放式互联OSI（Open System Interconnect）是对Internet工作方式描述的模型，将从Internet数据发送所涉及的功能分类为七层，每一层功能分明。    
 &nbsp;&nbsp;TCP/IP 模型是另一种Internet工作方式模型。它将流程分为四层。相比TCP/IP四层模型，人们在理解Internet时更多会参考OSI模型。但是，两者并没有绝对的好坏之分。
 
-![](../../resource/images/Other/TCP_Principle, Socket_and_Network_Programming/001.png)
+![](../../resource/images/other/TCP_Principle%2C%20Socket_and_Network_Programming/001.png)
       
 ### 层与协议(protocol)
 &nbsp;&nbsp;前面提到，模型将从Internet数据发送所涉及的功能分为数层，而它们为了实现某种功能，就必须有它们之间的规则存在，这种“规则”则叫做协议。    
@@ -73,7 +73,7 @@
 * FIN: 告知对方本端将要关闭连接，包含FIN的TCP报文段被称为结束报文段
 （图片来源于网络）
 
-![](../../resource/images/Other/TCP_Principle, Socket_and_Network_Programming/002.png)
+![](../../resource/images/other/TCP_Principle%2C%20Socket_and_Network_Programming/002.png)
 
 ### TCP三次握手
 &nbsp;&nbsp;TCP建立连接需要通过三次握手（Three-Way Handshake），简单的说就是两个端要发送三个包确认连接的建立。Socket将TCP握手的具体操作抽象化了，这些我们往后会讲，先让我们知道TCP三次握手的步骤。我们这里的例子，A端向B端发起连接，A端和B端是客户端和服务器的关系。
@@ -136,7 +136,7 @@
 ### 建立连接 
 &nbsp;&nbsp;通过Socket建立通信的连接至少需要一对套接字，服务端和客户端各一个。建立一个连接很简单，服务器在监听状态时，客户端请求连接，服务器允许连接。
 
-![](../../resource/images/Other/TCP_Principle, Socket_and_Network_Programming/Socket_connect.png)
+![](../../resource/images/other/TCP_Principle%2C%20Socket_and_Network_Programming/Socket_connect.png)
 
 &nbsp;&nbsp;图例中服务端阻塞并开始监听，收到了客户端的连接请求并接受（accept），完成连接后再关闭连接（不含读写操作）。
 
