@@ -1,6 +1,4 @@
-use std::{
-    io::{self, Write},
-};
+use std::io::{self, Write};
 use super::error::{KvError,Result};
 use super::kv::{DataStore,Value};
 
@@ -9,9 +7,14 @@ pub struct RorDb {
 }
 
 impl RorDb {
-    pub fn run(mut self) {
+    pub fn open(path: String) -> Result<DataStore> {
+        let db = DataStore::open(path)?;
+        Ok(db)
+    }
+    pub fn run(db: DataStore) {
+        let mut rordb = RorDb {database:db};
         loop {
-            if let Err(e) = self.match_command() {
+            if let Err(e) = rordb.match_command() {
                 println!("{}",e)
             }
         }
@@ -90,7 +93,7 @@ impl RorDb {
                 println!("Successfully delete data {}",command[1]);
             }, 
             "compact" => {
-                if command.len() != 2 {
+                if command.len() != 1 {
                     return Err(KvError::ParameterError("compact".to_string()));
                 }
                 self.database.compact()?;
