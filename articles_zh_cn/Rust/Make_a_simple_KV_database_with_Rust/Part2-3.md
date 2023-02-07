@@ -77,10 +77,10 @@ kv.add("name".to_string(),"makiror".to_string())?;
 
 ### 项目结构 
 &nbsp;&nbsp;我们要完成一个既可以作为数据库服务端/客户端，也能在本地进行数据操作的程序，所以我们将这三种情况分为三个模式，它们都需要使用最底层的用户系统和存储模块，然后画一个简单的结构图：
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/project_structure0.png)    
+![](../../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/project_structure0.png)    
 &nbsp;&nbsp;Server模式下，程序只需要处理请求并输出日志，而在Local模式和Client模式则需要获取用户输入来进行对应的操作，我选择的方式是REPL（Read Eval Print Loop）的方式来接受用户操作，而Local只需要直接操作本地文件，而Client只需要向服务端发送操作请求，并且通过服务端的回应判断操作是否成功。所以我们分别为Local和Client写一个REPL模块，进一步抽象命令处理的过程。经更改后这个结构图变成了这样：
 <br>
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/project_structure1.png)    
+![](../../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/project_structure1.png)    
 <br>
 &nbsp;&nbsp;画出了这个简略的结构图，至少知道我们要做什么了。
 <br>
@@ -572,7 +572,7 @@ pub struct ConnectRequest {
 > https://doc.rust-lang.org
 
 &nbsp;&nbsp;而请求数据的长度是不固定的，该如何保证数据完整读取？其实很简单，就像我们写存储功能时的那样的思路，usize类型的大小是一定的（注：取决于程序运行的电脑架构），所以我们可以把数据编码成字节数组后获取其长度（usize类型），并将它也编码，连成一条数据发送。将它们分别编码成Vec\<u8>类型，然后拼接成这样并发送。
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/request.png)
+![](../../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/request.png)
 &nbsp;&nbsp;因为我们后面，服务端和客户端会发的东西不仅是这个结构体，还有很多其他类型的东西（例如操作请求枚举类），所以我们可以定义一个函数来编码它，这是一个包含泛型T的结构体Message，并且定义结构体成员方法。
 ```
 // src/request.rs
@@ -809,7 +809,7 @@ pub enum ConnectError {
 + ServerError：指服务端出现的问题，而非针对此客户端的。例如存储用户的文件异常，一般会把没有分类的，其余的错误归为这一类。
 
 &nbsp;&nbsp;然后我们考虑一个函数，它会在服务端处理此客户端请求，出现无法修复的异常时直接把错误信息发送给客户端，然后直接断开连接（有时不考虑是否发送成功），画一个简单的流程图：
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/flow_chart_0.png)
+![](../../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/flow_chart_0.png)
 &nbsp;&nbsp;所以，我们先写一个启动函数，如果无法绑定地址开启监听就会返回错误。在启动前检查用户文件存在，如果因为不存在还无法创建会返回错误。在正确与一个客户端建立TCP连接后，调用handle_connection函数对客户端的数据进行处理。
 ```
 // src/server.rs
@@ -937,7 +937,7 @@ fn handle_connection(&mut self, mut stream: TcpStream, address: SocketAddr) -> R
 
 &nbsp;&nbsp;这边解释一下，遍历HashMap是因为我们不能保证不同用户输入的，指向同一个文件的路径是一样的，所以我们会使用一个很简单的库，将用户的输入和已有的路径对比是否是同一个文件。     
 &nbsp;&nbsp;这样说太不清晰了，直接画图吧。（小螃蟹图源：https://doc.rust-lang.org/stable/book/）
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/flow_chart_1.png)
+![](../../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/flow_chart_1.png)
 &nbsp;&nbsp;因为在遍历HashMap并得到值时，我们不能把值带出作用域，所以只能原地赋值。这个流程图在逻辑上是没问题的，因为布尔值不是真就是假，且在将布尔值赋值为假之前会为opened_db赋值，且这个操作不会失败。所以是不存在opened_db到handle_client时仍然未初始化的情况的。但是Rust并不这么认为，它认为在opened_db值为false时，opened_db是有可能未初始化的（在逻辑上不存在这种情况，但是它不知道），所以它不允许你编译。     
 &nbsp;&nbsp;那我们在这里就只好让Rust满意了，就是当在HashMap找到已有的数据文件时，赋值并直接进行操作，然后返回。如果遍历完都没有就新打开一个数据文件并开启新线程，也就是“分头行动”。首先我们写遍历HashMap部分的代码，此处使用一个叫做is_same_file的库，它的功能很简单：对比两个路径是否是一个文件。我们只需要遍历HashMap并且挨个路径比对。如果成功了就将布尔值"exists"设为true，因为比对是有可能出错的，后面再进行判断。
 ```
@@ -1114,7 +1114,7 @@ impl Client {
 + 以一个操作作为参数，直接操作数据库的函数。
 
 &nbsp;&nbsp;然后整个流程就是这样的：
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/flow_chart_2.png)
+![](../../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part2-3/flow_chart_2.png)
 
 &nbsp;&nbsp;很多问题我们都可以沿用上一节的解决方法，例如数据传输等。但是我们会遇到一些小问题，先列出来：
 + 服务端如何及时知道客户端已经断连并关闭线程？
