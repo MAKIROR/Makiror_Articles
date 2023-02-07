@@ -1,0 +1,5 @@
+name = "Default server"
+ip = "127.0.0.1"
+port = "11451"
+data_path = "./data/"
+timeout = 300

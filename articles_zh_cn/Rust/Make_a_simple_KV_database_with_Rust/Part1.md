@@ -1,6 +1,6 @@
 # 用Rust写一个极简的KV数据库【1】
 
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/cover.png)
+![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part1/cover.png)
 
 ## 开篇
 &nbsp;&nbsp;这是一篇理论知识和简单实战的文章，上了初中以后就沉迷于Rust无法自拔（其实是初二才开始常用的x）。但是干做项目一点也不过瘾，于是我决定来造个轮子并写博客，当然，更多还是让你学数据库相关的知识，实战内容只是一个体现。“极简”指功能和难度。
@@ -43,7 +43,7 @@
 &nbsp;&nbsp;在这种存储结构下，逻辑相邻的数据未必要在物理位置上相邻，它会在计算机用一组任意的存储单元存储线性表的数据。线性表的链式存储是它的代表，储存空间可以不连续，因为在链表中有节点的指针域这个东西，对于头节点而言只需要知道后置节点就行了，而其他节点就只需要它的前置节点和后置节点，不要求物理位置相邻。当然，它就会需要比数组多用点空间，但是存取速度会更快。
 （图源：Wiki）
 </br>
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/random_and_sequential_access.png)
+![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part1/random_and_sequential_access.png)
 </br>
 
 ### 数据库和数据库管理系统
@@ -159,8 +159,9 @@ NoSQL（因为分很多类所以不考虑某些结构特有的取舍）：
 > delete age
 ```
 &nbsp;&nbsp;那么被写进文件的数据就长这样：
+
 | DataFile |
-| :----: | :----: |
+| :----: |
 | add("name","Aaron") |
 | add("name","Makiror") |
 | add("age",24) |
@@ -185,7 +186,7 @@ NoSQL（因为分很多类所以不考虑某些结构特有的取舍）：
 &nbsp;&nbsp;在前面有提到，直接将数据存在内存是愚蠢且不现实的，于是我们要建立这样一张HashMap，存放Key对应Value在文件的位置，这个位置被叫做偏移量（Offset），然后根据偏移量查询对应的值。    
 &nbsp;&nbsp;我们将数据编码成binary并写入文件，我们存储在一个数据文件的内容是以项（Entry）为单位的，假设两条项存储在里面：
 </br>
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/demo01.jpg)
+![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part1/demo01.jpg)
 </br>
 &nbsp;&nbsp;它们两个的长度不同，我们在存储时是以Bytes为单位的，所以Entry 0和Entry 1的长度分别是25和32。然后，我们假设它们两个项的Key分别是"name"和"age"，那在HashMap就是这样的：
 | Key | Offset  |
@@ -243,7 +244,7 @@ pub type Result<T> = std::result::Result<T, KvError>;
 &nbsp;&nbsp;在数据编码和解码的部分有参考一些其他博客，选了一个比较清晰的。
 &nbsp;&nbsp;前面提到我们存储数据是以Entry为单位的，一条Entry数据代表一个数据的操作（add、delete等）。因为key和value的长度是不一定的，但是枚举类和整数类型的大小是一定的，所以我们在程序中可以考虑这样实现，首先定义一种长度固定的结构体，就叫它Meta吧。一个Meta包含命令的类型，Key和Value的长度。然后一个Entry就包含一个Meta和长度不一定的部分。
 </br>
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/entry.jpg)
+![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part1/entry.jpg)
 </br>
 
 &nbsp;&nbsp;于是，我们在代码文件定义这几个结构体：
@@ -281,7 +282,7 @@ pub struct Meta {
 &nbsp;&nbsp;枚举类Value所包含的成员就是这个数据库所支持的数据类型，以后更新可能会支持更多。枚举类Command包含的只是会被储存的命令类型，所以就两个。
 &nbsp;&nbsp;在Bitcask那篇论文中，还会包括CRC校验码和时间戳。关于CRC校验的部分该版本没有写，可能下次会连同网络模块一起补上。
 </br>
-![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/entry_bitcask.png)
+![](../../resource/images/Rust/Make_a_simple_KV_database_with_Rust/part1/entry_bitcask.png)
 </br>
 
 &nbsp;&nbsp;因为Meta的大小是固定的，而我们用usize表示key和value的长度，所以我们应该定义两个常量：
